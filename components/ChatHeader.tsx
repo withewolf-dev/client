@@ -4,6 +4,8 @@ import {
   PhoneIcon,
   PaperClipIcon,
 } from '@heroicons/react/solid'
+import { useRecoilValue } from 'recoil'
+import { CurrentUser } from '../atoms/atoms'
 type Props = {}
 
 const ChatHeader = (props: Props) => {
