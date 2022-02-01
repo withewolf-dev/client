@@ -19,6 +19,7 @@ const LoginForm = (props: Props) => {
 
   const Login = async (e: SyntheticEvent) => {
     e.preventDefault()
+    setloading(true)
     try {
       const config = {
         headers: {

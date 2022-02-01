@@ -5,18 +5,16 @@ import Chat from '../components/Chat'
 import ChatList from '../components/ChatList'
 import Login from '../components/Login'
 import { useEffect } from 'react'
+import { isEmpty } from '../utils'
 
 export default function Home({ me }) {
   const [currentUser, setcurrentUser] = useRecoilState(CurrentUser)
-  // const user = useRecoilValue(CurrentUser)
-
-  // console.log(me)
 
   useEffect(() => {
     setcurrentUser(me)
   }, [me])
 
-  if (!currentUser[`name`]) return <Login />
+  if (isEmpty(currentUser)) return <Login />
   return (
     <div className="relative  bg-mainBg">
       <Head>
@@ -33,8 +31,6 @@ export default function Home({ me }) {
 }
 
 export const getServerSideProps = async (context) => {
-  console.log(context.req.headers.cookie)
-
   const cookie = context.req.headers.cookie
   const resp = await fetch('http://localhost:5000/api/user/me', {
     headers: {
@@ -44,7 +40,11 @@ export const getServerSideProps = async (context) => {
 
   const me = await resp.json()
 
-  console.log(me, 'me')
+  if (me.user === null) {
+    return {
+      props: { me: {} },
+    }
+  }
 
   return {
     props: { me },
