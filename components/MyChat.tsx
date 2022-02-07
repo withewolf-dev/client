@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
-import { Chat } from '../atoms/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { Chat, CurrentUser } from '../atoms/atoms'
 import MessageBox from './MessageBox'
 
 type Props = {}
@@ -9,6 +9,7 @@ type Props = {}
 const MyChat = (props: Props) => {
   //const [init, setinit] = useState(true)
   const [chats, setchats] = useRecoilState(Chat)
+  const user = useRecoilValue(CurrentUser)
 
   useEffect(() => {
     fetchChats()
@@ -16,9 +17,14 @@ const MyChat = (props: Props) => {
 
   const fetchChats = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/chat/`, {
-        withCredentials: true,
-      })
+      const { data } = await axios.get(
+        `https://whatsappchat-server.herokuapp.com/api/chat/`,
+        {
+          headers: {
+            Authorization: `Bearer ${user[`token`]}`,
+          },
+        }
+      )
       setchats(data)
       // console.log(data)
     } catch (error) {

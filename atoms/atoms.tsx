@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client'
 
 export const LoginUiState = atom({
   key: 'loginUiState', // unique ID (with respect to other atoms/selectors)
-  default: false, // default value (aka initial value)
+  default: true, // default value (aka initial value)
 })
 
 export const CurrentUser = atom({

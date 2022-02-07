@@ -31,30 +31,20 @@ const ChatList = (props: Props) => {
 
   const getSearchResult = async () => {
     const res = await axios.get(
-      `http://localhost:5000/api/user?search=${term}`,
-      { withCredentials: true }
+      `https://whatsappchat-server.herokuapp.com/api/user?search=${term}`,
+      {
+        headers: {
+          Authorization: `Bearer ${user[`token`]}`,
+        },
+      }
     )
     setpeople(res.data)
   }
 
   const Logout = async () => {
     setloading(true)
-
-    try {
-      const config = {
-        withCredentials: true,
-      }
-      const { data } = await axios.get(
-        'http://localhost:5000/api/user/logout',
-
-        config
-      )
-      console.log(data)
-
-      setUser({})
-    } catch (error) {
-      alert('Failed to log you out')
-    }
+    localStorage.removeItem('userInfo')
+    setUser({})
 
     setloading(false)
   }

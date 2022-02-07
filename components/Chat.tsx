@@ -12,7 +12,6 @@ import TextBox from './TextBox'
 import io, { Socket } from 'socket.io-client'
 
 type Props = {}
-const ENDPOINT = 'http://localhost:5000' // "https://talk-a-tive.herokuapp.com"; -> After deployment
 
 const Chat = (props: Props) => {
   const loadingChat = useRecoilValue(LoadingChat)
@@ -25,7 +24,7 @@ const Chat = (props: Props) => {
   const isEmpty = Object.keys(chatInstance).length === 0
 
   useEffect(() => {
-    const s = io('http://localhost:5000/')
+    const s = io('https://whatsappchat-server.herokuapp.com')
     setsocket(s)
     if (socket) {
       socket.emit('setup', currentUser)
@@ -40,7 +39,15 @@ const Chat = (props: Props) => {
       {!loadChatWindow && <h2>Click on chat to start chating</h2>}
       {loadChatWindow && (
         <>
-          {!loadingChat && (
+          {!isEmpty && (
+            <>
+              {' '}
+              <ChatHeader />
+              <Conversation socket={socket} />
+              <TextBox socket={socket} />
+            </>
+          )}
+          {/* {!loadingChat && (
             <>
               {!isEmpty && (
                 <>
@@ -56,7 +63,7 @@ const Chat = (props: Props) => {
             <div className=" flex items-center justify-center">
               <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-gray-900"></div>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>

@@ -22,14 +22,12 @@ const TextBox = ({ socket }: Props) => {
       try {
         const config = {
           headers: {
-            'Content-type': 'application/json',
+            Authorization: `Bearer ${currentUser[`token`]}`,
           },
-
-          withCredentials: true,
         }
         settext('')
         const { data } = await axios.post(
-          'http://localhost:5000/api/message',
+          'https://whatsappchat-server.herokuapp.com/api/message',
           {
             content: text,
             chatId: chatInstance[`_id`],

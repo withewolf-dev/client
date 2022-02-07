@@ -4,15 +4,21 @@ import { CurrentUser } from '../atoms/atoms'
 import Chat from '../components/Chat'
 import ChatList from '../components/ChatList'
 import Login from '../components/Login'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { isEmpty } from '../utils'
 
-export default function Home({ me }) {
+export default function Home() {
+  //const [currentUser, setcurrentUser] = useState()
   const [currentUser, setcurrentUser] = useRecoilState(CurrentUser)
 
   useEffect(() => {
-    setcurrentUser(me)
-  }, [me])
+    const user = JSON.parse(localStorage.getItem('userInfo'))
+    if (user) {
+      setcurrentUser(user)
+    } else {
+      setcurrentUser({})
+    }
+  }, [])
 
   if (isEmpty(currentUser)) return <Login />
   return (
@@ -30,23 +36,26 @@ export default function Home({ me }) {
   )
 }
 
-export const getServerSideProps = async (context) => {
-  const cookie = context.req.headers.cookie
-  const resp = await fetch('http://localhost:5000/api/user/me', {
-    headers: {
-      cookie: cookie!,
-    },
-  })
+// export const getServerSideProps = async (context) => {
+//   const cookie = context.req.headers.cookie
+//   const resp = await fetch(
+//     'https://whatsappchat-server.herokuapp.com/api/user/me',
+//     {
+//       headers: {
+//         cookie: cookie!,
+//       },
+//     }
+//   )
 
-  const me = await resp.json()
+//   const me = await resp.json()
 
-  if (me.user === null) {
-    return {
-      props: { me: {} },
-    }
-  }
+//   if (me.user === null) {
+//     return {
+//       props: { me: {} },
+//     }
+//   }
 
-  return {
-    props: { me },
-  }
-}
+//   return {
+//     props: { me },
+//   }
+// }

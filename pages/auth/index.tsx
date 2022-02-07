@@ -12,7 +12,6 @@ const Login = (props: Props) => {
           <img src="whatsapp.png" alt="whatsapp" className="ml-20 h-80 w-80" />
         </div>
         <div className="flex flex-[0.35]">
-          {/* <LoginForm /> */}
           <SignupForm />
         </div>
       </div>

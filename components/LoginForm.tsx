@@ -25,10 +25,10 @@ const LoginForm = (props: Props) => {
         headers: {
           'Content-type': 'application/json',
         },
-        withCredentials: true,
+        // withCredentials: true,
       }
       const { data } = await axios.post(
-        `http://localhost:5000/api/user/login`,
+        `https://whatsappchat-server.herokuapp.com/api/user/login`,
         {
           email,
           password,
@@ -36,6 +36,7 @@ const LoginForm = (props: Props) => {
         config
       )
       console.log(data)
+      localStorage.setItem('userInfo', JSON.stringify(data))
       setloading(false)
       setuser(data)
     } catch (error) {

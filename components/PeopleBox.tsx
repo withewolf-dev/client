@@ -1,7 +1,13 @@
 import axios from 'axios'
 import React from 'react'
-import { useRecoilState } from 'recoil'
-import { Chat, ChatInstance, LoadingChat, SearchTerm } from '../atoms/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import {
+  Chat,
+  ChatInstance,
+  CurrentUser,
+  LoadingChat,
+  SearchTerm,
+} from '../atoms/atoms'
 
 type Props = {
   pic: string
@@ -15,15 +21,20 @@ const PeopleBox = ({ pic, email, name, userId }: Props) => {
   const [term, setTerm] = useRecoilState(SearchTerm)
   const [loadingChat, setloadingChat] = useRecoilState(LoadingChat)
   const [chatInstance, setchatInstance] = useRecoilState(ChatInstance)
+  const currentUser = useRecoilValue(CurrentUser)
 
   const accessChat = async () => {
     try {
       setloadingChat(true)
 
       const { data } = await axios.post(
-        `http://localhost:5000/api/chat`,
+        `https://whatsappchat-server.herokuapp.com/api/chat`,
         { userId },
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser[`token`]}`,
+          },
+        }
       )
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats])

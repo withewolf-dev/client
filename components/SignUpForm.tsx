@@ -58,7 +58,7 @@ const SignupForm = (props: Props) => {
         },
       }
       const { data } = await axios.post(
-        `http://localhost:5000/api/user`,
+        `https://whatsappchat-server.herokuapp.com/api/user`,
         {
           name: fullname,
           email,

@@ -2,7 +2,13 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { Socket } from 'socket.io-client'
-import { ChatInstance, CurrentUser, Messages } from '../atoms/atoms'
+import {
+  ChatInstance,
+  CurrentUser,
+  LoadingChat,
+  Messages,
+} from '../atoms/atoms'
+import Loader from './Loader'
 
 type Props = {
   socket: Socket
@@ -13,24 +19,30 @@ const Conversation = ({ socket }: Props) => {
   const [messages, setMessages] = useRecoilState(Messages)
   const currentUser = useRecoilValue(CurrentUser)
 
+  const [loadingChat, setLoadingChat] = useRecoilState(LoadingChat)
+
   const fetchMessages = async () => {
+    //console.log('loading chat')
+
     try {
       const config = {
         headers: {
-          'Content-type': 'application/json',
+          Authorization: `Bearer ${currentUser[`token`]}`,
         },
-
-        withCredentials: true,
       }
 
       const { data } = await axios.get(
-        `http://localhost:5000/api/message/${chatInstance[`_id`]}`,
+        `https://whatsappchat-server.herokuapp.com/api/message/${
+          chatInstance[`_id`]
+        }`,
         config
       )
       setMessages(data)
-      // setLoading(false)
+      setLoadingChat(false)
       socket.emit('join chat', chatInstance[`_id`])
     } catch (error) {
+      setLoadingChat(false)
+
       alert('Failed to Load the Messages')
     }
   }
@@ -38,6 +50,7 @@ const Conversation = ({ socket }: Props) => {
   useEffect(() => {
     if (!socket) return
     fetchMessages()
+    setLoadingChat(true)
   }, [chatInstance])
 
   useEffect(() => {
@@ -50,7 +63,8 @@ const Conversation = ({ socket }: Props) => {
 
   return (
     <div className="flex-1 overflow-y-auto bg-chat-wallpaper bg-cover bg-center bg-no-repeat p-6 scrollbar-thin scrollbar-thumb-gray-300">
-      {messages &&
+      {!loadingChat &&
+        messages &&
         messages.map((m, i) => (
           <div key={m._id}>
             {currentUser[`_id`] === m.sender[`_id`] && (
@@ -78,6 +92,7 @@ const Conversation = ({ socket }: Props) => {
             )}
           </div>
         ))}
+      {loadingChat && <Loader />}
     </div>
   )
 }
