@@ -35,21 +35,20 @@ const SignupForm = (props: Props) => {
     }
   }
 
-  const UploadImage = async () => {
-    const imageRef = ref(storage, `images/${fileName}`)
+  const Signup = async () => {
+    setloading(true)
 
+    const imageRef = ref(storage, `images/${fileName}`)
+    console.log(`image uploading ${fileName}`)
+
+    let downloadUrl
     if (pic) {
       await uploadString(imageRef, pic, 'data_url').then(async () => {
-        const downloadURL = await getDownloadURL(imageRef)
-        console.log('done')
-
-        return downloadURL
+        downloadUrl = await getDownloadURL(imageRef)
+        console.log(downloadUrl, 'downloadUrl')
+        return downloadUrl
       })
     }
-  }
-  const SignUp = async () => {
-    setloading(true)
-    const picUrl = await UploadImage()
 
     try {
       const config = {
@@ -63,14 +62,12 @@ const SignupForm = (props: Props) => {
           name: fullname,
           email,
           password,
-          pic: picUrl,
+          pic: downloadUrl,
         },
         config
       )
-      console.log(data)
       setloading(false)
       changeTo()
-      // router.push('/')
     } catch (error) {
       setloading(false)
       alert(error.response.data.message)
@@ -80,7 +77,43 @@ const SignupForm = (props: Props) => {
     setfullname('')
     setpic('')
     setfileName('')
+    setpassword('')
   }
+  // const SignUp = async () => {
+  //   setloading(true)
+  //   const picUrl = await UploadImage()
+
+  //   console.log(picUrl, 'picUrl')
+
+  //   try {
+  //     const config = {
+  //       headers: {
+  //         'Content-type': 'application/json',
+  //       },
+  //     }
+  //     const { data } = await axios.post(
+  //       `https://whatsappchat-server.herokuapp.com/api/user`,
+  //       {
+  //         name: fullname,
+  //         email,
+  //         password,
+  //         pic: picUrl,
+  //       },
+  //       config
+  //     )
+  //     setloading(false)
+  //     changeTo()
+  //   } catch (error) {
+  //     setloading(false)
+  //     alert(error.response.data.message)
+  //   }
+
+  //   setemail('')
+  //   setfullname('')
+  //   setpic('')
+  //   setfileName('')
+  //   setpassword('')
+  // }
 
   return (
     <div className="bg-grey-lighter flex  flex-col">
@@ -127,7 +160,7 @@ const SignupForm = (props: Props) => {
             placeholder="Confirm Password"
           />
           <button
-            onClick={SignUp}
+            onClick={Signup}
             className="text-md mb-4 block w-full rounded bg-green-500 p-3 text-gray-700"
           >
             {!loading && <h2>Sign up</h2>}
