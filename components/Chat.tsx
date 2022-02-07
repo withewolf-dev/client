@@ -35,8 +35,12 @@ const Chat = (props: Props) => {
   }, [chatInstance])
 
   return (
-    <div className="flex flex-[0.65] flex-col ">
-      {!loadChatWindow && <h2>Click on chat to start chating</h2>}
+    <div className="flex flex-[0.65] flex-col">
+      {!loadChatWindow && (
+        <div className="flex h-80  items-center justify-center">
+          Click on chat to start chating
+        </div>
+      )}
       {loadChatWindow && (
         <>
           {!isEmpty && (
